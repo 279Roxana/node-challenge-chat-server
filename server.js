@@ -28,16 +28,6 @@ client.connect(function () {
    
   });
 
-  app.get("/", function (req, res) {
-    const collection = db.collection("chat-server");
-    client.connect(function () {
-      
-        res.send("Hello World");
-
-    });
-
-    client.close()
-  });
 
 
   app.post("/messages", function (req, res) {
