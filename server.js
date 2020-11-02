@@ -12,85 +12,98 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
-
-client.connect(function () {
-  const db = client.db("node-project");
-
-  app.get("/messages", function (req, res) {
+app.get("/messages", function (req, res) {
+  client.connect(function () {
+    const db = client.db("node-project");
     const collection = db.collection("chat-server");
-   
-      collection.find().toArray(function (error, messages) {
-        res.send(error || messages);
-        client.close()
-     
+
+    collection.find().toArray(function (error, messages) {
+      res.send(error || messages);
+      client.close()
+
     });
 
-   
+
   });
 
+})
 
 
-  
-  app.post("/messages", function (req, res) {
+app.post("/messages", function (req, res) {
+  client.connect(function () {
+    const db = client.db("node-project");
     const collection = db.collection("chat-server");
     const addMessage = req.body;
     addMessage.timeSent = new Date();
     !addMessage.from || !addMessage.text
       ? res.send(404)
       : collection.insertOne(addMessage, function (error, result) {
-          res.send({ success: true });
-        });
+        res.send({ success: true });
+      });
   });
+})
 
-  app.get("/messages/search", function (req, res) {
+app.get("/messages/search", function (req, res) {
+  client.connect(function () {
+    const db = client.db("node-project");
     let searchText = { text: req.query.text };
     const collection = db.collection("chat-server");
-  
-      collection.findOne(searchText, function (error, messages) {
-        res.send(error || messages);
-    
+
+    collection.findOne(searchText, function (error, messages) {
+      res.send(error || messages);
+
     });
   });
+})
+app.get("/messages/latest", function (req, res) {
+  client.connect(function () {
+    const db = client.db("node-project");
+    const collection = db.collection("chat-server");
+    collection.find().toArray(function (error, messages) {
+      res.send(error || messages.slice(-10));
 
-  app.get("/messages/latest", function (req, res) {
-    
-      collection.find().toArray(function (error, messages) {
-        res.send(error || messages.slice(-10));
-    
     });
   });
-
-  app.get("/messages/:id", function (req, res) {
+})
+app.get("/messages/:id", function (req, res) {
+  client.connect(function () {
+    const db = client.db("node-project");
     let messageId = { _id: mongodb.ObjectId(req.params.id) };
     const collection = db.collection("chat-server");
-   
-      collection.findOne(messageId, function (error, messages) {
-        res.send(error || messages);
-      });
- 
-  });
 
-  app.put("/messages/:id", function (req, res) {
+    collection.findOne(messageId, function (error, messages) {
+      res.send(error || messages);
+    });
+
+  });
+})
+app.put("/messages/:id", function (req, res) {
+  client.connect(function () {
+    const db = client.db("node-project");
     let messageId = { _id: mongodb.ObjectId(req.params.id) };
     const collection = db.collection("chat-server");
-   
-      collection.findOneAndUpdate(messageId, function (error, messages) {
-        res.send(error || messages);
-      });
- 
-  });
 
-  app.delete("/messages/:id", function (req, res) {
+    collection.findOneAndUpdate(messageId, function (error, messages) {
+      res.send(error || messages);
+    });
+
+  });
+})
+
+app.delete("/messages/:id", function (req, res) {
+  client.connect(function () {
+    const db = client.db("node-project");
     let messageId = { _id: req.params.id };
     const collection = db.collection("chat-server");
-   
-      collection.findOne(messageId, function (error, messages) {
-        res.send(error || messages);
-      });
-    
+
+    collection.findOne(messageId, function (error, messages) {
+      res.send(error || messages);
+    });
+
   });
+})
 
-  let port = process.env.PORT;
+let port = process.env.PORT;
 
-  app.listen(port || 5000);
-});
+app.listen(port || 5000);
+
