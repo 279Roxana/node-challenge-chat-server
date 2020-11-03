@@ -21,7 +21,7 @@ const MessagePost = () => {
       text: messageInput,
     };
 
-    fetch("https://roxana-chat-server.herokuapp.com/messages/", {
+    fetch("https://roxana-chat-server.herokuapp.com/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

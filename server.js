@@ -39,6 +39,7 @@ app.post("/messages", function (req, res) {
       ? res.send(404)
       : collection.insertOne(addMessage, function (error, result) {
         res.send({ success: true });
+        client.close()
       });
   });
 })
