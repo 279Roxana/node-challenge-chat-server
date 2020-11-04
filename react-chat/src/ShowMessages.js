@@ -5,11 +5,11 @@ const ShowMessages = ()=>{
 const [messages, setMessages] = useState([])
 
 useEffect( ()=>{
-    fetch("https://roxana-chat-server.herokuapp.com/messages")
+    fetch("https://roxana279-chat-server.herokuapp.com/messages")
     
     .then((res) => res.json())
     .then((data) => setMessages(data))
-}, []
+}, [messages]
 )
 
 return (
